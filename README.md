@@ -2,30 +2,30 @@
 A responsive, real-time weather dashboard providing current conditions and a three-day forecast for multiple cities.
 
 ## ✨ Features
-Real-time Weather Data: Displays current temperature, description, humidity, wind speed, pressure, visibility, and UV index.
+- Real-time Weather Data: Displays current temperature, description, humidity, wind speed, pressure, visibility, and UV index.
 
-3-Day Forecast: Provides an at-a-glance forecast for the next three days.
+- 3-Day Forecast: Provides an at-a-glance forecast for the next three days.
 
-Location-Aware: Automatically fetches weather for the user's current location upon load.
+- Location-Aware: Automatically fetches weather for the user's current location upon load.
 
-City Search: Allows users to search for weather information for any city globally.
+- City Search: Allows users to search for weather information for any city globally.
 
-Unit Conversion: Easily switch between Celsius (°C) and Fahrenheit (°F) for temperature display.
+- Unit Conversion: Easily switch between Celsius (°C) and Fahrenheit (°F) for temperature display.
 
-Dynamic UI: Weather cards adapt styling (e.g., color) based on temperature conditions.
+- Dynamic UI: Weather cards adapt styling (e.g., color) based on temperature conditions.
 
-Multi-City Display: Add and remove multiple weather cards to track different locations.
+- Multi-City Display: Add and remove multiple weather cards to track different locations.
 
-Responsive Design: Ensures optimal viewing and interaction across various devices (mobile, tablet, desktop).
+- Responsive Design: Ensures optimal viewing and interaction across various devices (mobile, tablet, desktop).
 
 ## 🛠️ Technologies Used
 HTML5
 
-CSS3 (Custom styles for a modern look)
+- CSS3 (Custom styles for a modern look)
 
-JavaScript (Vanilla JS for DOM manipulation and API calls)
+- JavaScript (Vanilla JS for DOM manipulation and API calls)
 
-OpenWeatherMap API
+- OpenWeatherMap API
 
 ## 📂 Project Structure
    ```
@@ -37,33 +37,33 @@ OpenWeatherMap API
    ```
 
 ## 📦 How to Use
-Clone the repository:
+1. Clone the repository:
    ```
 
-git clone https://github.com/Ra7ma116/WeatherSphere.git
+   git clone https://github.com/Ra7ma116/WeatherSphere.git
    ```
 
-Navigate to the project directory:
+2. Navigate to the project directory:
    ```
 
-cd WeatherSphere
+    cd WeatherSphere
    ```
 
-Obtain an OpenWeatherMap API Key:
+ 3. Obtain an OpenWeatherMap API Key:
 
-Go to OpenWeatherMap and sign up for a free account.
+     Go to OpenWeatherMap and sign up for a free account.
 
-Generate a new API key from your account dashboard.
+     Generate a new API key from your account dashboard.
 
-Update the API Key:
+ 4. Update the API Key:
 
-Open index.html in a text editor.
+     Open index.html in a text editor.
 
-Locate the line const API_KEY = '86c84f88d137cf5a245c70b755fe2bef'; and replace the placeholder value with your newly generated API key.
+     Locate the line const API_KEY = '86c84f88d137cf5a245c70b755fe2bef'; and replace the placeholder value with your newly generated API key.
 
-Open the Application:
+5. Open the Application:
 
-Simply open the index.html file directly in your web browser. No server setup is required.
+    Simply open the index.html file directly in your web browser. No server setup is required.
 
 ## 🤝 Contributing
 Fork the project
