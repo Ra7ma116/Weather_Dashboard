@@ -51,27 +51,27 @@ HTML5
 
  3. Obtain an OpenWeatherMap API Key:
 
-     Go to OpenWeatherMap and sign up for a free account.
+     - Go to OpenWeatherMap and sign up for a free account.
 
-     Generate a new API key from your account dashboard.
+     - Generate a new API key from your account dashboard.
 
  4. Update the API Key:
 
-     Open index.html in a text editor.
+     - Open index.html in a text editor.
 
-     Locate the line const API_KEY = '86c84f88d137cf5a245c70b755fe2bef'; and replace the placeholder value with your newly generated API key.
+     - Locate the line const API_KEY = '86c84f88d137cf5a245c70b755fe2bef'; and replace the placeholder value with your newly generated API key.
 
 5. Open the Application:
 
-    Simply open the index.html file directly in your web browser. No server setup is required.
+   -  Simply open the index.html file directly in your web browser. No server setup is required.
 
 ## 🤝 Contributing
-Fork the project
+- Fork the project
 
-Create your feature branch (git checkout -b feature/AmazingFeature)
+- Create your feature branch (git checkout -b feature/AmazingFeature)
 
-Commit your changes (git commit -m 'Add some amazing feature')
+- Commit your changes (git commit -m 'Add some amazing feature')
 
-Push to the branch (git push origin feature/AmazingFeature)
+- Push to the branch (git push origin feature/AmazingFeature)
 
-Open a Pull Request
+- Open a Pull Request
