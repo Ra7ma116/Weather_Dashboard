@@ -1,8 +1,6 @@
-// API configuration
-const API_KEY = '86c84f88d137cf5a245c70b755fe2bef'; // Replace with your actual API key
-let currentUnit = 'metric'; // Default to Celsius
+const API_KEY = '86c84f88d137cf5a245c70b755fe2bef';
+let currentUnit = 'metric';
 
-// DOM elements
 const cityInput = document.getElementById('city-input');
 const searchBtn = document.getElementById('search-btn');
 const weatherContainer = document.getElementById('weather-container');
@@ -10,7 +8,6 @@ const celsiusBtn = document.getElementById('celsius-btn');
 const fahrenheitBtn = document.getElementById('fahrenheit-btn');
 const currentDateTime = document.getElementById('current-date-time');
 
-// Update current date and time
 function updateDateTime() {
     const now = new Date();
     const options = {
@@ -24,29 +21,22 @@ function updateDateTime() {
     currentDateTime.textContent = now.toLocaleDateString('en-US', options);
 }
 
-// Update time every minute
 updateDateTime();
 setInterval(updateDateTime, 60000);
 
-// Default cities to display
 const defaultCities = ['Istanbul', 'New York', 'Tokyo', 'Paris', 'Sydney'];
 
-// Initialize the dashboard
 document.addEventListener('DOMContentLoaded', () => {
-    // Load default cities
     defaultCities.forEach(city => {
         fetchWeatherData(city);
     });
 
-    // Try to get user's location
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             position => {
                 const { latitude, longitude } = position.coords;
 
-                // For Cairo area specifically (approximate coordinates)
                 if (latitude > 29.8 && latitude < 30.2 && longitude > 31.1 && longitude < 31.4) {
-                    // Just show Cairo directly without reverse geocoding
                     fetchWeatherData("Cairo");
                 } else {
                     fetchWeatherByCoords(latitude, longitude);
@@ -54,17 +44,14 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             error => {
                 console.log('Geolocation error:', error);
-                // Fallback to Cairo if geolocation fails
                 fetchWeatherData("Cairo");
             }
         );
     } else {
-        // If geolocation not supported, show Cairo by default
         fetchWeatherData("Cairo");
     }
 });
 
-// Event listeners
 searchBtn.addEventListener('click', () => {
     const city = cityInput.value.trim();
     if (city) {
@@ -101,15 +88,12 @@ fahrenheitBtn.addEventListener('click', () => {
     }
 });
 
-// Fetch weather data by city name
 async function fetchWeatherData(city) {
-    // Check if city already exists
     if (document.getElementById(`weather-${city.toLowerCase().replace(/\s+/g, '-')}`)) {
         alert('This city is already displayed');
         return;
     }
 
-    // Show loading state
     const loadingId = `loading-${Date.now()}`;
     weatherContainer.insertAdjacentHTML('beforeend', `
            <div id="${loadingId}" class="weather-card loading">
@@ -128,7 +112,6 @@ async function fetchWeatherData(city) {
 
         const currentData = await response.json();
 
-        // Fetch forecast data
         const forecastResponse = await fetch(
             `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=${currentUnit}`
         );
@@ -139,7 +122,6 @@ async function fetchWeatherData(city) {
 
         const forecastData = await forecastResponse.json();
 
-        // Fetch UV index (requires One Call API)
         let uvIndex = 'N/A';
         try {
             const uvResponse = await fetch(
@@ -153,10 +135,8 @@ async function fetchWeatherData(city) {
             console.log('UV index not available');
         }
 
-        // Remove loading element
         document.getElementById(loadingId).remove();
 
-        // Create weather card
         createWeatherCard(currentData, forecastData, uvIndex);
     } catch (error) {
         document.getElementById(loadingId).remove();
@@ -164,7 +144,6 @@ async function fetchWeatherData(city) {
     }
 }
 
-// Fetch weather data by coordinates
 async function fetchWeatherByCoords(lat, lon) {
     const loadingId = `loading-${Date.now()}`;
     weatherContainer.insertAdjacentHTML('beforeend', `
@@ -174,7 +153,6 @@ async function fetchWeatherByCoords(lat, lon) {
        `);
 
     try {
-        // First try to get the city name from reverse geocoding
         const reverseGeoResponse = await fetch(
             `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&appid=${API_KEY}`
         );
@@ -183,7 +161,6 @@ async function fetchWeatherByCoords(lat, lon) {
         if (reverseGeoResponse.ok) {
             const geoData = await reverseGeoResponse.json();
             if (geoData.length > 0) {
-                // For Cairo specifically, we'll force the name we want
                 if (geoData[0].country === "EG" && geoData[0].state === "Cairo Governorate") {
                     cityName = "Cairo, EG";
                 } else {
@@ -192,7 +169,6 @@ async function fetchWeatherByCoords(lat, lon) {
             }
         }
 
-        // Now fetch weather data
         const response = await fetch(
             `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=${currentUnit}`
         );
@@ -203,11 +179,9 @@ async function fetchWeatherByCoords(lat, lon) {
 
         const currentData = await response.json();
 
-        // Override the city name with our determined name
         currentData.name = cityName.split(",")[0];
         currentData.sys.country = cityName.split(",")[1] ? cityName.split(",")[1].trim() : "";
 
-        // Fetch forecast data
         const forecastResponse = await fetch(
             `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=${currentUnit}`
         );
@@ -218,7 +192,6 @@ async function fetchWeatherByCoords(lat, lon) {
 
         const forecastData = await forecastResponse.json();
 
-        // Fetch UV index
         let uvIndex = 'N/A';
         try {
             const uvResponse = await fetch(
@@ -232,10 +205,8 @@ async function fetchWeatherByCoords(lat, lon) {
             console.log('UV index not available');
         }
 
-        // Remove loading element
         document.getElementById(loadingId).remove();
 
-        // Create weather card
         createWeatherCard(currentData, forecastData, uvIndex);
     } catch (error) {
         document.getElementById(loadingId).remove();
@@ -243,7 +214,6 @@ async function fetchWeatherByCoords(lat, lon) {
     }
 }
 
-// Create a weather card
 function createWeatherCard(currentData, forecastData, uvIndex) {
     const city = currentData.name;
     const country = currentData.sys.country;
@@ -256,19 +226,15 @@ function createWeatherCard(currentData, forecastData, uvIndex) {
     const pressure = currentData.main.pressure;
     const visibility = currentData.visibility ? (currentData.visibility / 1000).toFixed(1) : 'N/A';
 
-    // Get sunrise and sunset times
     const sunrise = new Date(currentData.sys.sunrise * 1000);
     const sunset = new Date(currentData.sys.sunset * 1000);
     const sunriseTime = sunrise.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const sunsetTime = sunset.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    // Get temperature class for color
     const tempClass = getTemperatureClass(temp, currentUnit);
 
-    // Process forecast data (group by day and get midday forecast)
     const dailyForecasts = processForecastData(forecastData);
 
-    // Create HTML for the weather card
     const cardId = `weather-${city.toLowerCase().replace(/\s+/g, '-')}`;
     const cardHTML = `
            <div id="${cardId}" class="weather-card">
@@ -362,16 +328,13 @@ function createWeatherCard(currentData, forecastData, uvIndex) {
     weatherContainer.insertAdjacentHTML('beforeend', cardHTML);
 }
 
-// Process forecast data to get daily forecasts
 function processForecastData(forecastData) {
     const forecasts = {};
 
-    // Group forecasts by date
     forecastData.list.forEach(item => {
         const date = new Date(item.dt * 1000);
         const dateStr = date.toLocaleDateString('en-US', { weekday: 'short' });
 
-        // Use midday forecast (around 12:00) for simplicity
         if (!forecasts[dateStr] || date.getHours() === 12) {
             forecasts[dateStr] = {
                 day: dateStr,
@@ -382,13 +345,10 @@ function processForecastData(forecastData) {
         }
     });
 
-    // Convert to array and limit to 3 days
     return Object.values(forecasts).slice(0, 3);
 }
 
-// Get temperature class for styling
 function getTemperatureClass(temp, unit) {
-    // Convert to Celsius if in Fahrenheit for consistent classification
     const tempC = unit === 'imperial' ? (temp - 32) * 5 / 9 : temp;
 
     if (tempC < 0) return 'temp-freezing';
@@ -399,54 +359,41 @@ function getTemperatureClass(temp, unit) {
     return 'temp-hot';
 }
 
-// Update all weather displays when unit changes
 function updateAllWeatherDisplays() {
     const cards = document.querySelectorAll('.weather-card:not(.loading)');
 
     cards.forEach(card => {
-        // Get all temperature elements in this card
         const tempElements = card.querySelectorAll('.temperature, .forecast-temp, .detail-value');
 
         tempElements.forEach(element => {
-            // Skip if this element doesn't contain temperature (like humidity or wind)
             if (!element.textContent.includes('°')) return;
 
-            // Get the numeric value and current unit
             const parts = element.textContent.split('°');
             const tempValue = parseFloat(parts[0]);
-            const currentUnit = parts[1][0]; // C or F
+            const currentUnit = parts[1][0];
 
-            // Only convert if needed
             if ((currentUnit === 'C' && currentUnit === 'metric') ||
                 (currentUnit === 'F' && currentUnit === 'imperial')) {
                 return;
             }
 
-            // Convert the temperature
             let newTemp, newUnit;
             if (currentUnit === 'C') {
-                // Convert C to F
                 newTemp = Math.round((tempValue * 9 / 5) + 32);
                 newUnit = 'F';
             } else {
-                // Convert F to C
                 newTemp = Math.round((tempValue - 32) * 5 / 9);
                 newUnit = 'C';
             }
 
-            // Update the display
             element.textContent = `${newTemp}°${newUnit}`;
 
-            // Update temperature class for color coding
             if (element.classList.contains('temperature') || element.classList.contains('forecast-temp')) {
-                // Remove all temperature classes
                 element.classList.remove('temp-freezing', 'temp-cold', 'temp-cool', 'temp-mild', 'temp-warm', 'temp-hot');
-                // Add the appropriate class
                 element.classList.add(getTemperatureClass(newTemp, currentUnit === 'C' ? 'imperial' : 'metric'));
             }
         });
 
-        // Update "Feels like" temperature unit
         const feelsLikeElement = card.querySelector('.detail-value:first-child');
         if (feelsLikeElement && feelsLikeElement.textContent.includes('°')) {
             const parts = feelsLikeElement.textContent.split('°');
@@ -457,20 +404,18 @@ function updateAllWeatherDisplays() {
             feelsLikeElement.textContent = `${newTemp}°${currentUnit === 'metric' ? 'F' : 'C'}`;
         }
 
-        // Update wind speed unit
         const windElement = card.querySelector('.detail-value:nth-child(3)');
         if (windElement) {
             const parts = windElement.textContent.split(' ');
             const speedValue = parseFloat(parts[0]);
             const newSpeed = currentUnit === 'metric' ?
-                (speedValue * 2.237).toFixed(1) : // m/s to mph
-                (speedValue / 2.237).toFixed(1);  // mph to m/s
+                (speedValue * 2.237).toFixed(1) :
+                (speedValue / 2.237).toFixed(1);
             windElement.textContent = `${newSpeed} ${currentUnit === 'metric' ? 'mph' : 'm/s'}`;
         }
     });
 }
 
-// Remove a weather card
 function removeWeatherCard(cardId) {
     const card = document.getElementById(cardId);
     if (card) {
@@ -478,10 +423,8 @@ function removeWeatherCard(cardId) {
     }
 }
 
-// Helper function to capitalize first letter
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-// Make removeWeatherCard available globally
 window.removeWeatherCard = removeWeatherCard;
